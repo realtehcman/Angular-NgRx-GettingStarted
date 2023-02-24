@@ -17,7 +17,7 @@ export class ProductListComponent {
   errorMessage: string;
 
   displayCode$: Observable<boolean> = this.store.select('products').pipe(
-    map((products: any) => {
+    map((products: Product[] | any) => {
       if (products) {
         return products.showProductCode;
       }
