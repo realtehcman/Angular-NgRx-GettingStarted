@@ -24,10 +24,12 @@ export class ProductListComponent implements OnInit, OnDestroy {
     })
   );
 
-  products$: Observable<Product[] | any> = this.productService.getProducts().pipe(
-    map((products: Product[]) => products),
-    catchError((err) => (this.errorMessage = err))
-  );
+  products$: Observable<Product[] | any> = this.productService
+    .getProducts()
+    .pipe(
+      map((products: Product[]) => products),
+      catchError((err) => (this.errorMessage = err))
+    );
 
   // Used to highlight the selected product in the list
   selectedProduct: Product | null;
