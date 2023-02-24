@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
 
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { Product } from '../product';
@@ -12,7 +12,7 @@ import { ProductService } from '../product.service';
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.css'],
 })
-export class ProductListComponent implements OnInit, OnDestroy {
+export class ProductListComponent {
   pageTitle = 'Products';
   errorMessage: string;
 
@@ -33,26 +33,14 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   // Used to highlight the selected product in the list
   selectedProduct: Product | null;
-  sub: Subscription;
 
   constructor(
     private store: Store<any>,
     private productService: ProductService
   ) {}
 
-  ngOnInit(): void {
-    this.sub = this.productService.selectedProductChanges$.subscribe(
-      (selectedProduct) => (this.selectedProduct = selectedProduct)
-    );
-  }
-
-  ngOnDestroy(): void {
-    this.sub.unsubscribe();
-  }
-
   checkChanged(): void {
     this.store.dispatch({ type: '[Product] Toggle Product Code' });
-    // this.displayCode = !this.displayCode;
   }
 
   newProduct(): void {
