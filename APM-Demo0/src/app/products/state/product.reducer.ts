@@ -15,8 +15,8 @@ export interface ProductState {
 export const productReducer = createReducer(
   {
     showProductCode: false,
-  },
-  on(createAction('[Product] Toggle Product Code'), (state) => {
+  } as ProductState,
+  on(createAction('[Product] Toggle Product Code'), (state): ProductState => {
     console.log('original state: ' + JSON.stringify(state));
     return {
       ...state,

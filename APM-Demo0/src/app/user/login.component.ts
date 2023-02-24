@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { State } from '../products/state/product.reducer';
 
 import { AuthService } from './auth.service';
 import { User } from './user';
@@ -16,7 +17,7 @@ export class LoginComponent implements OnInit {
   pageTitle = 'Log In';
   errorMessage: string;
 
-  maskUserName$: Observable<boolean> = this.store.select('users').pipe(
+  maskUserName$: Observable<boolean> = this.store.select('user').pipe(
     map((user: any) => {
       if (user) {
         return user.hideUserCredentials;
@@ -25,7 +26,7 @@ export class LoginComponent implements OnInit {
   );
 
   constructor(
-    private store: Store<any>,
+    private store: Store<State>,
     private authService: AuthService,
     private router: Router
   ) {}
