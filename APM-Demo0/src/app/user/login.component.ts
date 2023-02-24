@@ -19,7 +19,7 @@ export class LoginComponent implements OnInit {
   maskUserName$: Observable<boolean> = this.store.select('users').pipe(
     map((user: any) => {
       if (user) {
-        return user.showUserCredentials;
+        return user.hideUserCredentials;
       }
     })
   );

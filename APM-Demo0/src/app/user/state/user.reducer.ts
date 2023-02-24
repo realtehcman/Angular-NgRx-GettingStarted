@@ -8,7 +8,7 @@ export const userReducer = createReducer(
     console.log('original state: ' + JSON.stringify(state));
     return {
       ...state,
-      showUserCredentials: !state.hideUserCredentials,
+      hideUserCredentials: !state.hideUserCredentials,
     };
   })
 );
