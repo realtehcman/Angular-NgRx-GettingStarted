@@ -1,10 +1,10 @@
 import {
-  createAction,
   createFeatureSelector,
   createReducer,
   createSelector,
   on,
 } from '@ngrx/store';
+import { toggleShowCredentials } from './user.actions';
 
 export interface UserState {
   hideUserCredentials: boolean;
@@ -22,7 +22,7 @@ export const getHideUserCredentials = createSelector(
 
 export const userReducer = createReducer(
   initialUserState,
-  on(createAction('[User] Toggle Show Credentials'), (state) => {
+  on(toggleShowCredentials, (state) => {
     console.log('original state: ' + JSON.stringify(state));
     return {
       ...state,
@@ -30,3 +30,5 @@ export const userReducer = createReducer(
     };
   })
 );
+export { toggleShowCredentials };
+

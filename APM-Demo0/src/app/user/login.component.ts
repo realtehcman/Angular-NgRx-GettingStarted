@@ -6,7 +6,10 @@ import { Observable } from 'rxjs';
 import { State } from '../products/state/product.reducer';
 
 import { AuthService } from './auth.service';
-import { getHideUserCredentials } from './state/user.reducer';
+import {
+  getHideUserCredentials,
+  toggleShowCredentials,
+} from './state/user.reducer';
 
 @Component({
   templateUrl: './login.component.html',
@@ -33,7 +36,7 @@ export class LoginComponent implements OnInit {
   }
 
   checkChanged(): void {
-    this.store.dispatch({ type: '[User] Toggle Show Credentials' });
+    this.store.dispatch(toggleShowCredentials());
   }
 
   login(loginForm: NgForm): void {

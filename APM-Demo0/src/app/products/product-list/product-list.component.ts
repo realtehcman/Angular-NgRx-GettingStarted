@@ -6,6 +6,7 @@ import { catchError, map } from 'rxjs/operators';
 
 import { Product } from '../product';
 import { ProductService } from '../product.service';
+import { toggleProductCode } from '../state/product.actions';
 import { getShowProductCode } from '../state/product.reducer';
 
 @Component({
@@ -32,7 +33,7 @@ export class ProductListComponent {
   ) {}
 
   checkChanged(): void {
-    this.store.dispatch({ type: '[Product] Toggle Product Code' });
+    this.store.dispatch(toggleProductCode());
   }
 
   newProduct(): void {
