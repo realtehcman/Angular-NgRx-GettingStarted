@@ -6,6 +6,7 @@ import { catchError, map } from 'rxjs/operators';
 
 import { Product } from '../product';
 import { ProductService } from '../product.service';
+import { getShowProductCode } from '../state/product.reducer';
 
 @Component({
   selector: 'pm-product-list',
@@ -16,13 +17,7 @@ export class ProductListComponent {
   pageTitle = 'Products';
   errorMessage: string;
 
-  displayCode$: Observable<boolean> = this.store.select('products').pipe(
-    map((products: Product[] | any) => {
-      if (products) {
-        return products.showProductCode;
-      }
-    })
-  );
+  displayCode$: Observable<boolean> = this.store.select(getShowProductCode);
 
   products$: Observable<Product[] | any> = this.productService
     .getProducts()

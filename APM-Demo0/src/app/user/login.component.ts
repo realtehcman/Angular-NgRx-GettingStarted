@@ -3,11 +3,10 @@ import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { State } from '../products/state/product.reducer';
 
 import { AuthService } from './auth.service';
-import { User } from './user';
+import { getHideUserCredentials } from './state/user.reducer';
 
 @Component({
   templateUrl: './login.component.html',
@@ -17,12 +16,8 @@ export class LoginComponent implements OnInit {
   pageTitle = 'Log In';
   errorMessage: string;
 
-  maskUserName$: Observable<boolean> = this.store.select('user').pipe(
-    map((user: any) => {
-      if (user) {
-        return user.hideUserCredentials;
-      }
-    })
+  maskUserName$: Observable<boolean> = this.store.select(
+    getHideUserCredentials
   );
 
   constructor(
