@@ -13,7 +13,7 @@ import {
   clearCurrentProduct,
   setCurrentProduct,
 } from '../state/product.actions';
-import { map, tap } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'pm-product-edit',
@@ -81,11 +81,13 @@ export class ProductEditComponent implements OnInit {
       .subscribe();
 
     // Watch for value changes
-    this.productForm.valueChanges.subscribe(
-      () =>
-        (this.displayMessage = this.genericValidator.processMessages(
-          this.productForm
-        ))
+    this.productForm.valueChanges.pipe(
+      map(
+        () =>
+          (this.displayMessage = this.genericValidator.processMessages(
+            this.productForm
+          ))
+      )
     );
   }
 
@@ -131,10 +133,10 @@ export class ProductEditComponent implements OnInit {
   deleteProduct(product: Product): void {
     if (product && product.id) {
       if (confirm(`Really delete the product: ${product.productName}?`)) {
-        this.productService.deleteProduct(product.id).subscribe({
-          next: () => this.store.dispatch(clearCurrentProduct()),
-          error: (err) => (this.errorMessage = err),
-        });
+        this.productService.deleteProduct(product.id).pipe(
+          map(() => this.store.dispatch(clearCurrentProduct())),
+          catchError((err) => (this.errorMessage = err))
+        );
       }
     } else {
       // No need to delete, it was never saved
@@ -151,17 +153,19 @@ export class ProductEditComponent implements OnInit {
         const product = { ...originalProduct, ...this.productForm.value };
 
         if (product.id === 0) {
-          this.productService.createProduct(product).subscribe({
-            next: (product) =>
-              this.store.dispatch(setCurrentProduct({ product })),
-            error: (err) => (this.errorMessage = err),
-          });
+          this.productService.createProduct(product).pipe(
+            map((product) =>
+              this.store.dispatch(setCurrentProduct({ product }))
+            ),
+            catchError((err) => (this.errorMessage = err))
+          );
         } else {
-          this.productService.updateProduct(product).subscribe({
-            next: (product) =>
-              this.store.dispatch(setCurrentProduct({ product })),
-            error: (err) => (this.errorMessage = err),
-          });
+          this.productService.updateProduct(product).pipe(
+            map((product) =>
+              this.store.dispatch(setCurrentProduct({ product }))
+            ),
+            catchError((err) => (this.errorMessage = err))
+          );
         }
       }
     } else {
