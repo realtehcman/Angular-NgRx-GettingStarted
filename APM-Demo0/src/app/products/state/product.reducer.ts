@@ -75,5 +75,12 @@ export const productReducer = createReducer(
         starRating: null,
       },
     };
+  }),
+  on(ProductAction.loadProductsSuccess, (state, action): ProductState => {
+    console.log('original state: ' + JSON.stringify(state));
+    return {
+      ...state,
+      products: action.products,
+    };
   })
 );

@@ -19,13 +19,14 @@ import { catchError, map, tap } from 'rxjs/operators';
   selector: 'pm-product-edit',
   templateUrl: './product-edit.component.html',
 })
+
+//TODO: ?fix subscribe
 export class ProductEditComponent implements OnInit {
   pageTitle = 'Product Edit';
   errorMessage = '';
   productForm: FormGroup;
 
-  private productSubject = new Subject<Product | null>();
-  product$: Observable<Product | null> = this.productSubject.asObservable();
+  product$: Observable<Product | null>;
 
   // Use with the generic validation message class
   displayMessage: { [key: string]: string } = {};
@@ -75,10 +76,9 @@ export class ProductEditComponent implements OnInit {
     });
 
     // Watch for changes to the currently selected product
-    this.store
+    this.product$ = this.store
       .select(getCurrentProduct)
       .pipe(tap((selectedProduct) => this.displayProduct(selectedProduct)))
-      .subscribe();
 
     // Watch for value changes
     this.productForm.valueChanges.pipe(
@@ -100,9 +100,6 @@ export class ProductEditComponent implements OnInit {
   }
 
   displayProduct(product: Product | null): void {
-    // Set the local product property
-    this.productSubject.next(product);
-
     if (product) {
       // Reset the form back to pristine
       this.productForm.reset();

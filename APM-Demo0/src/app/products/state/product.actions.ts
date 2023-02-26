@@ -10,3 +10,13 @@ export const clearCurrentProduct = createAction(
   '[Product] Clear Current Product'
 );
 export const initNewProduct = createAction('[Product] Init New Product');
+//issues the http request
+export const loadProducts = createAction('[Product] Loading Products');
+export const loadProductsSuccess = createAction(
+  '[Product] Load Products Success',
+  props<{ products: Product[]}>()
+);
+export const loadProductsFailure = createAction(
+  '[Product] Load Products Fail',
+  props<{ error: string }>()
+);
