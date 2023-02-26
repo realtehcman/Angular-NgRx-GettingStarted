@@ -1,14 +1,13 @@
 import { Component } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { State, Store } from '@ngrx/store';
 
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { Product } from '../product';
 import { ProductService } from '../product.service';
-import { toggleProductCode } from '../state/product.actions';
-import { getShowProductCode } from '../state/product.reducer';
-
+import { getCurrentProduct, getShowProductCode, ProductState } from '../state/product.reducer';
+import * as ProductAction from '../state/product.actions';
 @Component({
   selector: 'pm-product-list',
   templateUrl: './product-list.component.html',
@@ -23,24 +22,28 @@ export class ProductListComponent {
   products$: Observable<Product[] | any> = this.productService
     .getProducts()
     .pipe(catchError((err) => (this.errorMessage = err)));
+  // products$: Observable<Product[] | any> = this.store.select(getCurrentProduct)
 
   // Used to highlight the selected product in the list
-  selectedProduct: Product | null;
+  selectedProduct$: Observable<Product | null> =
+    this.store.select(getCurrentProduct);
 
   constructor(
-    private store: Store<any>,
+    private store: Store<ProductState>,
     private productService: ProductService
   ) {}
 
   checkChanged(): void {
-    this.store.dispatch(toggleProductCode());
+    this.store.dispatch(ProductAction.toggleProductCode());
   }
 
   newProduct(): void {
-    this.productService.changeSelectedProduct(this.productService.newProduct());
+    this.store.dispatch(ProductAction.initNewProduct());
+    // this.productService.changeSelectedProduct(this.productService.newProduct());
   }
 
   productSelected(product: Product): void {
-    this.productService.changeSelectedProduct(product);
+    this.store.dispatch(ProductAction.setCurrentProduct({ product }));
+    // this.productService.changeSelectedProduct(product);
   }
 }
