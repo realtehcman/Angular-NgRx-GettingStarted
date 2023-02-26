@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
 
 import { Product } from '../product';
 import { ProductService } from '../product.service';
@@ -13,7 +13,7 @@ import {
   clearCurrentProduct,
   setCurrentProduct,
 } from '../state/product.actions';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'pm-product-edit',
@@ -24,8 +24,8 @@ export class ProductEditComponent implements OnInit {
   errorMessage = '';
   productForm: FormGroup;
 
-  product: Product | null;
-  sub: Subscription;
+  private productSubject = new Subject<Product | null>();
+  product$: Observable<Product | null> = this.productSubject.asObservable();
 
   // Use with the generic validation message class
   displayMessage: { [key: string]: string } = {};
@@ -75,11 +75,10 @@ export class ProductEditComponent implements OnInit {
     });
 
     // Watch for changes to the currently selected product
-    this.store.select(getCurrentProduct).pipe(
-      map((selectedProduct) => {
-        return this.displayProduct(selectedProduct);
-      })
-    );
+    this.store
+      .select(getCurrentProduct)
+      .pipe(tap((selectedProduct) => this.displayProduct(selectedProduct)))
+      .subscribe();
 
     // Watch for value changes
     this.productForm.valueChanges.subscribe(
@@ -100,7 +99,7 @@ export class ProductEditComponent implements OnInit {
 
   displayProduct(product: Product | null): void {
     // Set the local product property
-    this.product = product;
+    this.productSubject.next(product);
 
     if (product) {
       // Reset the form back to pristine
