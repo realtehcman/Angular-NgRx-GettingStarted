@@ -95,5 +95,27 @@ export const productReducer = createReducer(
       ...state,
       products: action.products,
     };
+  }),
+
+  on(ProductAction.updateProductSuccess, (state, action): ProductState => {
+    console.log('original state: ' + JSON.stringify(state));
+
+    const updatedProducts = state.products.map((item) =>
+      action.product.id === item.id ? action.product : item
+    );
+    return {
+      ...state,
+      products: updatedProducts,
+      currentProductId: action.product.id,
+    };
   })
+
+  //hnadling error
+  // on(ProductAction.updateProductsFailure, (state, action): ProductState => {
+  //   console.log('original state: ' + JSON.stringify(state));
+  //   return {
+  //     ...state,
+  //     error: action.error,
+  //   };
+  // })
 );

@@ -8,7 +8,11 @@ import { ProductService } from '../product.service';
 import { GenericValidator } from '../../shared/generic-validator';
 import { NumberValidators } from '../../shared/number.validator';
 import { Store } from '@ngrx/store';
-import { getCurrentProduct, ProductState } from '../state/product.reducer';
+import {
+  getCurrentProduct,
+  ProductState,
+  State,
+} from '../state/product.reducer';
 import * as ProductActions from '../state/product.actions';
 import { catchError, map, tap } from 'rxjs/operators';
 
@@ -31,7 +35,7 @@ export class ProductEditComponent implements OnInit {
   private genericValidator: GenericValidator;
 
   constructor(
-    private store: Store<ProductState>,
+    private store: Store<State>,
     private fb: FormBuilder,
     private productService: ProductService
   ) {
@@ -127,10 +131,15 @@ export class ProductEditComponent implements OnInit {
   deleteProduct(product: Product): void {
     if (product && product.id) {
       if (confirm(`Really delete the product: ${product.productName}?`)) {
-        this.productService.deleteProduct(product.id).subscribe({
-          next: () => this.store.dispatch(ProductActions.clearCurrentProduct()),
-          error: (err) => (this.errorMessage = err),
-        });
+        this.productService
+          .deleteProduct(product.id)
+          .pipe(
+            map(() =>
+              this.store.dispatch(ProductActions.clearCurrentProduct())
+            ),
+            catchError((err) => (this.errorMessage = err))
+          )
+          .subscribe();
       }
     } else {
       // No need to delete, it was never saved
