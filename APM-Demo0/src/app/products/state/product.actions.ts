@@ -4,7 +4,7 @@ import { Product } from '../product';
 export const toggleProductCode = createAction('[Product] Toggle Product Code');
 export const setCurrentProduct = createAction(
   '[Product] Set Current Product',
-  props<{ product: Product }>()
+  props<{ currentProductId: number }>()
 );
 export const clearCurrentProduct = createAction(
   '[Product] Clear Current Product'
@@ -14,9 +14,24 @@ export const initNewProduct = createAction('[Product] Init New Product');
 export const loadProducts = createAction('[Product] Loading Products');
 export const loadProductsSuccess = createAction(
   '[Product] Load Products Success',
-  props<{ products: Product[]}>()
+  props<{ products: Product[] }>()
 );
 export const loadProductsFailure = createAction(
   '[Product] Load Products Fail',
   props<{ error: string }>()
 );
+
+export const updateProduct = createAction(
+  '[Product] Update Product',
+  props<{ product: Product }>()
+);
+export const updateProductSuccess = createAction(
+  '[Product] Update Product Success',
+  props<{ products: Product }>()
+);
+export const updateProductsFailure = createAction(
+  '[Product] Load Products Failure',
+  props<{ error: string }>()
+);
+
+// upda

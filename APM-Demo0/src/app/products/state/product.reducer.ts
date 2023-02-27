@@ -14,12 +14,12 @@ export interface State extends AppState {
 
 const initialProductState: ProductState = {
   showProductCode: false,
-  currentProduct: null,
+  currentProductId: null,
   products: [],
 };
 export interface ProductState {
   showProductCode: boolean;
-  currentProduct: Product;
+  currentProductId: number | null;
   products: Product[];
 }
 
@@ -35,9 +35,28 @@ export const getProducts = createSelector(
   (state) => state.products
 );
 
+export const getCurrentProductId = createSelector(
+  getProductFeatureState,
+  (state) => state.currentProductId
+);
+
 export const getCurrentProduct = createSelector(
   getProductFeatureState,
-  (state) => state.currentProduct
+  getCurrentProductId,
+  (state, currentProductId) => {
+    if (currentProductId === 0) {
+      return {
+        id: 0,
+        productName: 'New ',
+        productCode: '',
+        description: '',
+        starRating: 0,
+      };
+    } else
+      return currentProductId
+        ? state.products.find((p) => p.id === currentProductId)
+        : null;
+  }
 );
 
 export const productReducer = createReducer(
@@ -53,27 +72,21 @@ export const productReducer = createReducer(
     console.log('original state: ' + JSON.stringify(state));
     return {
       ...state,
-      currentProduct: action.product,
+      currentProductId: action.currentProductId,
     };
   }),
   on(ProductAction.clearCurrentProduct, (state): ProductState => {
     console.log('original state: ' + JSON.stringify(state));
     return {
       ...state,
-      currentProduct: null,
+      currentProductId: null,
     };
   }),
   on(ProductAction.initNewProduct, (state): ProductState => {
     console.log('original state: ' + JSON.stringify(state));
     return {
       ...state,
-      currentProduct: {
-        id: 0,
-        productName: '',
-        productCode: '',
-        description: '',
-        starRating: null,
-      },
+      currentProductId: 0,
     };
   }),
   on(ProductAction.loadProductsSuccess, (state, action): ProductState => {
